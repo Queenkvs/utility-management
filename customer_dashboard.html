@@ -1,0 +1,15 @@
+<!-- templates/customer_dashboard.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Customer Dashboard</title>
+</head>
+<body>
+    <h1>Customer Dashboard</h1>
+    <ul>
+        {% for request in service_requests %}
+            <li>{{ request.description }} - Status: {{ request.status }}</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

@@ -1,0 +1,51 @@
+from django.db import models
+
+class Customer(models.Model):
+    name = models.CharField(max_length=100)
+    email = models.EmailField(unique=True)
+    address = models.CharField(max_length=200)
+    # Add other fields as needed
+
+class ServiceRequest(models.Model):
+    customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
+    description = models.TextField()
+    status = models.CharField(max_length=20, default='Pending')
+    # Add other fields as needed
+
+class CSR(models.Model):
+    name = models.CharField(max_length=100)
+    email = models.EmailField(unique=True)
+from django.shortcuts import render
+from .models import ServiceRequest
+
+def customer_dashboard(request):
+    # Retrieve service requests for the logged-in customer
+    service_requests = ServiceRequest.objects.filter(customer=request.user)
+    return render(request, 'customer_dashboard.html', {'service_requests': service_requests})
+
+def csr_dashboard(request):
+    # Retrieve all service requests
+    service_requests = ServiceRequest.objects.all()
+    return render(request, 'csr_dashboard.html', {'service_requests': service_requests})
+
+# gas_utility_app/urls.py
+from django.urls import path
+from .views import customer_dashboard, csr_dashboard
+
+urlpatterns = [
+    path('customer/', customer_dashboard, name='customer_dashboard'),
+    path('csr/', csr_dashboard, name='csr_dashboard'),
+]
+
+# gas_utility_project/urls.py
+
+from django.contrib import admin
+from django.urls import path, include
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('accounts/', include('django.contrib.auth.urls')),
+    path('accounts/', include('django.contrib.auth.urls')),
+    path('', include('gas_utility_app.urls')),
+]
+
